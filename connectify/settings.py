@@ -53,7 +53,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 
-MY_APPS = ["users"]
+MY_APPS = ["users", "comments", "follows", "friends", "likes", "posts"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
 
