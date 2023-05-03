@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "group-37-m5-14-connectify"
+version = "0.1.0"
+description = "Connectify"
+authors = ["JUorlando <110193846+JUorlando@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "group_37_m5_14_connectify"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+djangorestframework = "^3.14.0"
+djangorestframework-simplejwt = "^5.2.2"
+python-dotenv = "^1.0.0"
+psycopg2-binary = "^2.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
