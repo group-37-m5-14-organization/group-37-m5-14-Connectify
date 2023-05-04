@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 import friends.views as friends_views
-from follows import views
+from follows import views as follows_views
 
 urlpatterns = [
     path("users/", views.UserView.as_view()),
@@ -16,8 +16,8 @@ urlpatterns = [
         friends_views.ListFriendRequestView.as_view(),
     ),
     path("users/friends/", friends_views.ListFriendView.as_view()),
-    path("users/<int:pk>/follow/", views.FollowView.as_view()),
-    path("users/<int:pk>/follow/", views.FollowDestroyView.as_view()),
-    path("users/<int:pk>/follows/", views.FollowedListView.as_view()),
-    path("users/<int:pk>/following/", views.FollowListView.as_view())
+    path("users/<int:pk>/follow/", follows_views.FollowView.as_view()),
+    path("users/<int:pk>/follow/", follows_views.FollowDestroyView.as_view()),
+    path("users/<int:pk>/follows/", follows_views.FollowedListView.as_view()),
+    path("users/<int:pk>/following/", follows_views.FollowListView.as_view()),
 ]
