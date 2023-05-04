@@ -17,7 +17,6 @@ urlpatterns = [
     ),
     path("users/friends/", friends_views.ListFriendView.as_view()),
     path("users/<int:pk>/follow/", follows_views.FollowView.as_view()),
-    path("users/<int:pk>/follow/", follows_views.FollowDestroyView.as_view()),
-    path("users/<int:pk>/follows/", follows_views.FollowedListView.as_view()),
-    path("users/<int:pk>/following/", follows_views.FollowListView.as_view()),
+    path("users/follows/", follows_views.FollowedListView.as_view()),
+    path("users/following/", follows_views.FollowListView.as_view()),
 ]
