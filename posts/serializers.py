@@ -1,12 +1,18 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from .models import Post
+from users.serializers import UserSerializer
 
 
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        frields = ["id", "title", "img", "content", "user_id"]
-        read_only_fields = ["user_id"]
+class PostSerializer(ModelSerializer):
+    user = UserSerializer(read_only=True)
 
     def create(self, validated_data):
         return Post.objects.create(**validated_data)
+
+    def update(self, instance: Post, data: dict) -> Post:
+        return super().update(instance, data)
+
+    class Meta:
+        model = Post
+        fields = ["id", "title", "img", "content", "user"]
+        read_only_fields = ["user"]
