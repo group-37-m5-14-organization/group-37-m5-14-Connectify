@@ -12,12 +12,28 @@ import ipdb
 
 
 class CreateDestroyFriendRequestView(
-    generics.CreateAPIView, generics.DestroyAPIView, generics.UpdateAPIView
+    generics.ListCreateAPIView,
+    generics.DestroyAPIView,
+    generics.UpdateAPIView,
 ):
     authentication_classes = [JWTAuthentication]
     queryset = Friend.objects.all()
     serializer_class = FriendSerializer
     lookup_url_kwarg = "pk"
+
+    def list(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=self.kwargs.get("pk"))
+        received = Friend.objects.filter(receive_user=user, status=True)
+        sent = Friend.objects.filter(send_user=user, status=True)
+        queryset = received | sent
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -87,14 +103,3 @@ class ListFriendRequestView(generics.ListAPIView):
 
     def get_queryset(self):
         return Friend.objects.filter(receive_user=self.request.user, status=False)
-
-
-class ListFriendView(generics.ListAPIView):
-    authentication_classes = [JWTAuthentication]
-    serializer_class = FriendSerializer
-    pagination_class = pagination.PageNumberPagination
-
-    def get_queryset(self):
-        received = Friend.objects.filter(receive_user=self.request.user, status=True)
-        sent = Friend.objects.filter(send_user=self.request.user, status=True)
-        return received | sent
