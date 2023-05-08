@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".vercel.app"]
 
 
 # Application definition
@@ -51,9 +51,10 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "drf_spectacular",
 ]
 
-MY_APPS = ["users"]
+MY_APPS = ["users", "comments", "follows", "friends", "likes", "posts"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
 
@@ -100,6 +101,8 @@ DATABASES = {
         "PORT": 5432,
     }
 }
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 if os.getenv("DATABASE_URL"):
     DATABASES["default"] = dj_database_url.config()
@@ -161,3 +164,11 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Connectify",
+    "DESCRIPTION": "Social midia app, who friends can interact with other friends/users, insering his own posts and interact with the publish of the another users.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": True,
+    # OTHER SETTINGS
+}
