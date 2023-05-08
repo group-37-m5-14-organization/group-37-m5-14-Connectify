@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Follow
 from .serializers import FollowSerializer
 from users.models import User
@@ -79,7 +79,7 @@ class FollowView(generics.CreateAPIView, generics.DestroyAPIView):
 
 class FollowedListView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     serializer_class = FollowSerializer
 
@@ -88,7 +88,7 @@ class FollowedListView(generics.ListAPIView):
     
 class FollowListView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     serializer_class = FollowSerializer
 
