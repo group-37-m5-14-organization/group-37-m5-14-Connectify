@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app"]
+ALLOWED_HOSTS = [".vercel.app", "127.0.0.1"]
 
 
 # Application definition
@@ -101,8 +101,6 @@ DATABASES = {
         "PORT": 5432,
     }
 }
-
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 if os.getenv("DATABASE_URL"):
     DATABASES["default"] = dj_database_url.config()
