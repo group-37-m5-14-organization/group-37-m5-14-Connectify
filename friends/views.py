@@ -11,7 +11,7 @@ from rest_framework import pagination
 import ipdb
 
 
-class CreateDestroyFriendRequestView(
+class CreateDestroyListFriendRequestView(
     generics.ListCreateAPIView,
     generics.DestroyAPIView,
     generics.UpdateAPIView,
@@ -66,6 +66,9 @@ class CreateDestroyFriendRequestView(
 
     def perform_create(self, serializer, receive_user):
         return serializer.save(send_user=self.request.user, receive_user=receive_user)
+    
+    def perform_update(self, serializer):
+        return serializer.save(status=True)
 
     def destroy(self, request, *args, **kwargs):
         find_user = get_object_or_404(User, pk=self.kwargs.get("pk"))
