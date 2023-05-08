@@ -4,11 +4,15 @@ from .models import Like
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from likes.serializers import LikeSerializer
 
 
 class LikeView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    queryset = Like
+    serializer_class = LikeSerializer
 
     def post(self, request, pk: int):
         post_id = pk
