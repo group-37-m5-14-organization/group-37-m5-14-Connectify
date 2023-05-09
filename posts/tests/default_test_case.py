@@ -1,8 +1,11 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
-from ..models import User
+from users.models import User
 from rest_framework import status
 from rest_framework.utils.serializer_helpers import ReturnList
+from posts.models import Post
+from comments.models import Comment
+import ipdb
 
 
 class DefaultTestCase(TestCase):
@@ -31,13 +34,21 @@ class DefaultTestCase(TestCase):
         cls.user_login = {"username": "pedro", "password": "123456"}
         cls.user_friend_login = {"username": "fernando", "password": "123456"}
 
+        cls.post_data = {
+            "title": "Primeiro post",
+            "content": "Esse é o primeiro post desse usuário",
+            "img": "https://s.dicio.com.br/post.jpg",
+        }
+
+        cls.post_data_edit = {"title": "Primeiro post"}
+
+        cls.comment_data = {"content": "comentario"}
+
+        cls.comment_data_edit = {"content": "comentario editado"}
+
         cls.url_login = "/api/users/login/"
-        cls.url_requests = "/api/users/friends/requests/"
-        cls.url_followers = "/api/users/followers/"
-        cls.url_following = "/api/users/following/"
-        cls.url_user_not_found = "/api/users/99999/friends/"
-        cls.url_user_not_found_posts = "/api/users/99999/posts/"
-        cls.url_retrieve_user_not_found = "/api/users/99999/"
+
+        cls.url_posts = "/api/posts/"
 
         cls.message_test()
 
@@ -50,13 +61,26 @@ class DefaultTestCase(TestCase):
         cls.user = User.objects.create_user(**cls.user_request)
         cls.user_friend = User.objects.create_user(**cls.user_friend_request)
 
-        cls.url_user = f"/api/users/{cls.user.id}/friends/"
-        cls.url_friend = f"/api/users/{cls.user_friend.id}/friends/"
-        cls.url_follow = f"/api/users/{cls.user_friend.id}/follow/"
-        cls.url_retrieve_user = f"/api/users/{cls.user.id}/"
-        cls.url_retrieve_friend = f"/api/users/{cls.user_friend.id}/"
-        cls.url_user_posts = f"/api/users/{cls.user.id}/posts/"
-        cls.url_friend_posts = f"/api/users/{cls.user_friend.id}/posts/"
+        cls.post_public = Post.objects.create(**cls.post_data, user=cls.user)
+        cls.comment = Comment.objects.create(
+            **cls.comment_data, user=cls.user_friend, post=cls.post_public
+        )
+
+        cls.url_posts_retrieve = f"{cls.url_posts}{cls.post_public.id}/"
+        cls.url_posts_retrieve_not_found = f"{cls.url_posts}99999/"
+        cls.url_posts_retrieve_like = f"{cls.url_posts}{cls.post_public.id}/like/"
+        cls.url_posts_retrieve_not_found_like = f"{cls.url_posts}99999/like/"
+        cls.url_posts_retrieve_comment = f"{cls.url_posts}{cls.post_public.id}/comment/"
+        cls.url_posts_retrieve_not_found_comment = f"{cls.url_posts}99999/comment/"
+        cls.url_posts_retrieve_comment_retrieve = (
+            f"{cls.url_posts}{cls.post_public.id}/comment/{cls.comment.id}/"
+        )
+        cls.url_posts_retrieve_not_found_comment_retrieve = (
+            f"{cls.url_posts}99999/comment/{cls.comment.id}/"
+        )
+        cls.url_posts_retrieve_comment_not_found = (
+            f"{cls.url_posts}{cls.post_public.id}/comment/99999/"
+        )
 
     @classmethod
     def message_test(cls):
@@ -84,6 +108,15 @@ class DefaultTestCase(TestCase):
         self.assertEqual(
             str(response.data["detail"]),
             "Authentication credentials were not provided.",
+        )
+
+    def responseAssertNotAuthorized(self, response):
+        """Response detail: You do not have permission to perform this action."""
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertIn("detail", response.data)
+        self.assertEqual(
+            str(response.data["detail"]),
+            "You do not have permission to perform this action.",
         )
 
     def responseAssertNotFound(self, response):
