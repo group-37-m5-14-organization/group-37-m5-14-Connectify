@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path("users/<int:pk>/follow/", follows_views.FollowView.as_view()),
     path("users/posts/", SelfPostsView.as_view()),
-    path("users/follows/", follows_views.FollowedListView.as_view()),
+    path("users/followers/", follows_views.FollowedListView.as_view()),
     path("users/following/", follows_views.FollowListView.as_view()),
     path("users/<int:pk>/posts/", UserPostsView.as_view()),
 ]

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework import pagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 
 class CreateDestroyListFriendRequestView(
@@ -16,6 +17,7 @@ class CreateDestroyListFriendRequestView(
     generics.UpdateAPIView,
 ):
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Friend.objects.all()
     serializer_class = FriendSerializer
     lookup_url_kwarg = "pk"
@@ -65,7 +67,7 @@ class CreateDestroyListFriendRequestView(
 
     def perform_create(self, serializer, receive_user):
         return serializer.save(send_user=self.request.user, receive_user=receive_user)
-    
+
     def perform_update(self, serializer):
         return serializer.save(status=True)
 
@@ -100,6 +102,7 @@ class CreateDestroyListFriendRequestView(
 
 class ListFriendRequestView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = FriendSerializer
     pagination_class = pagination.PageNumberPagination
 
