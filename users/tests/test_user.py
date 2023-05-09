@@ -35,7 +35,7 @@ class UserTest(DefaultTestCase):
     def test_retrieve_user_error_not_found(self):
         self.client = self.login_apiclient(self.user_login)
 
-        response = self.client.get(self.url_retrieve_user)
+        response = self.client.get(self.url_retrieve_user_not_found)
 
         self.responseAssertNotFound(response)
 
