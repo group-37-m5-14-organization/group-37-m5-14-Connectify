@@ -2,3 +2,5 @@
 .env
 *lock
 .vscode
+venv
+db.sqlite3
