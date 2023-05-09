@@ -9,3 +9,6 @@ class Friend(models.Model):
         "users.User", on_delete=models.CASCADE, related_name="request_users"
     )
     status = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["id"]
