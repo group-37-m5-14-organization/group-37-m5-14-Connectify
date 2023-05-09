@@ -28,13 +28,11 @@ class FollowView(generics.CreateAPIView, generics.DestroyAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        verify_user_logged = Follow.objects.filter(
+        verify_already_follow = Follow.objects.filter(
             user=self.request.user, followed_user=followed_user
-        )
-        verify_user_wanted = Follow.objects.filter(
-            user=followed_user, followed_user=self.request.user
-        )
-        if verify_user_wanted or verify_user_logged:
+        ).exists()
+
+        if verify_already_follow:
             return Response(
                 {"message": "Already follow this user."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -64,20 +62,17 @@ class FollowView(generics.CreateAPIView, generics.DestroyAPIView):
             )
 
         self.perform_destroy(
-            follower_exists
-            if len(follower_exists) > 0
-            else follower_exists_inverted
+            follower_exists if len(follower_exists) > 0 else follower_exists_inverted
         )
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_object(self):
         user = get_object_or_404(User, pk=self.kwargs.get("pk"))
-        verify = get_object_or_404(
-            Follow, user=user, followed_user=self.request.user
-        )
+        verify = get_object_or_404(Follow, user=user, followed_user=self.request.user)
         return verify
 
-class FollowedListView(generics.ListAPIView):
+
+class FollowersListView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -85,8 +80,9 @@ class FollowedListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Follow.objects.filter(followed_user=self.request.user)
-    
-class FollowListView(generics.ListAPIView):
+
+
+class FollowingListView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 

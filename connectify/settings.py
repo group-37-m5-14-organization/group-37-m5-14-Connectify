@@ -106,7 +106,7 @@ if os.getenv("DATABASE_URL"):
     DATABASES["default"] = dj_database_url.config()
     DEBUG = False
 
-STATICFILES_DIRS = os.path.join(BASE_DIR),
+STATICFILES_DIRS = (os.path.join(BASE_DIR),)
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build", "static")
 
 # Password validation
